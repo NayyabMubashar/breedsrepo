@@ -1,24 +1,18 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Card, Input, Layout, theme } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFloppyDisk, faHeart } from '@fortawesome/free-solid-svg-icons';
+
 
 import { Link } from 'react-router-dom';
 import Meta from 'antd/es/card/Meta';
-
-
-
-
-
+import { FavoritesContext } from '../createcontext/FavoritesContext';
 const { Header, Content } = Layout;
 const { Search } = Input;
 
-
-
-
-
-
-
 const Home = () => {
+  const { state, dispatch } = useContext(FavoritesContext);
 
   const [dogImages, setDogImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,14 +42,21 @@ const Home = () => {
     token: { borderRadiusLG },
   } = theme.useToken();
 
+  const handleAddFavorite = (dog) => {
+    dispatch({ type: 'ADD_FAVORITE', payload: dog });
+  };
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
 
       <Layout>
-        <Header style={{ padding: 0, background: 'blue', height: '70px' }}>
+        <Header style={{ padding: 0,  background: 'blue', height: '70px' }}>
 
-          <img src='./public/dog1.jpeg' alt='img' style={{ width: '60px' }} />
 
+          <Link to='/card'
+          ><FontAwesomeIcon icon={faFloppyDisk} style={{ color: 'black', fontSize: '44px', margin:'9px' }} />
+            <span style={{ position: 'absolute', top: '3px', color: 'black', borderRadius: '50%', padding: '10px 1px', fontSize: '24px' }}>
+              {state.favorites.length}</span></Link>
         </Header>
 
         <Content style={{ margin: '0 16px' }}>
@@ -91,7 +92,15 @@ const Home = () => {
                       }
                     >
                       <Meta style={{ fontWeight: 'bold' }} title={dog.name} />
-                      <button className='btn btn-outline-warning sm m-2'>Fav Dog</button>
+                      <button
+                        className='btn btn-outline-warning sm m-2'
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleAddFavorite(dog);
+                        }}
+                      >
+                        Fav Dog
+                      </button>
 
                     </Card>
                   </Link>
